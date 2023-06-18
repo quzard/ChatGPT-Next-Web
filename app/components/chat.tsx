@@ -895,6 +895,14 @@ export function Chat() {
                       </div>
                     </div>
                   )}
+
+                  {!isUser && message.price && !message.preview && (
+                    <div className={styles["chat-message-actions"]}>
+                      <div className={styles["chat-message-action-date"]}>
+                        {message.price}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}

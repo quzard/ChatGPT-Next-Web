@@ -5,7 +5,7 @@ import { trimTopic } from "../utils";
 
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
-import { ModelType } from "./config";
+import { MODEL_INPUT_PRICES, MODEL_OUTPUT_PRICES, ModelType } from "./config";
 import { createEmptyMask, Mask } from "./mask";
 import { StoreKey } from "../constant";
 import { api, RequestMessage } from "../client/api";
@@ -24,6 +24,7 @@ export type ChatMessage = RequestMessage & {
   id?: number;
   model?: ModelType;
   tiktoken?: string;
+  price?: string;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -314,6 +315,12 @@ export const useChatStore = create<ChatStore>()(
               completion_tokens +
               " total_tokens: " +
               total_tokens;
+            let price =
+              prompt_tokens * MODEL_INPUT_PRICES[modelConfig.model] +
+              completion_tokens * MODEL_OUTPUT_PRICES[modelConfig.model];
+            price = price / 1000;
+            price = price * 8;
+            botMessage.price = "¥" + price;
             if (message) {
               botMessage.content = message;
               get().onNewMessage(botMessage);
