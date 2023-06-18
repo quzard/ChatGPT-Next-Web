@@ -66,10 +66,10 @@ export const MODEL_INPUT_PRICES = {
   "gpt-3.5-turbo-16k": 0.003,
   "gpt-3.5-turbo-16k-0613": 0.003,
   "qwen-v1": 0,
-  ernie: 0,
-  spark: 0,
-  llama: 0,
-  chatglm: 0,
+  "ernie": 0,
+  "spark": 0,
+  "llama": 0,
+  "chatglm": 0,
 } as const;
 
 export const MODEL_OUTPUT_PRICES = {
@@ -85,10 +85,10 @@ export const MODEL_OUTPUT_PRICES = {
   "gpt-3.5-turbo-16k": 0.004,
   "gpt-3.5-turbo-16k-0613": 0.004,
   "qwen-v1": 0,
-  ernie: 0,
-  spark: 0,
-  llama: 0,
-  chatglm: 0,
+  "ernie": 0,
+  "spark": 0,
+  "llama": 0,
+  "chatglm": 0,
 } as const;
 
 export const ALL_MODELS = [
