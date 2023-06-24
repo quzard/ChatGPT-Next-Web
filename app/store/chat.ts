@@ -97,6 +97,7 @@ interface ChatStore {
   newSession: (mask?: Mask) => void;
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
+  nextSession: (delta: number) => void;
   onNewMessage: (message: ChatMessage) => void;
   onUserInput: (content: string) => Promise<void>;
   summarizeSession: () => void;
@@ -210,6 +211,13 @@ export const useChatStore = create<ChatStore>()(
           currentSessionIndex: 0,
           sessions: [session].concat(state.sessions),
         }));
+      },
+
+      nextSession(delta) {
+        const n = get().sessions.length;
+        const limit = (x: number) => (x + n) % n;
+        const i = get().currentSessionIndex;
+        get().selectSession(limit(i + delta));
       },
 
       deleteSession(index) {
