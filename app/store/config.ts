@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { getClientConfig } from "../config/client";
-import { StoreKey } from "../constant";
+import { DEFAULT_INPUT_TEMPLATE, StoreKey } from "../constant";
 
 export enum SubmitKey {
   Enter = "Enter",
@@ -39,6 +39,7 @@ export const DEFAULT_CONFIG = {
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
+    template: DEFAULT_INPUT_TEMPLATE,
   },
 };
 
@@ -66,10 +67,10 @@ export const MODEL_INPUT_PRICES = {
   "gpt-3.5-turbo-16k": 0.003,
   "gpt-3.5-turbo-16k-0613": 0.003,
   "qwen-v1": 0,
-  "ernie": 0,
-  "spark": 0,
-  "llama": 0,
-  "chatglm": 0,
+  ernie: 0,
+  spark: 0,
+  llama: 0,
+  chatglm: 0,
 } as const;
 
 export const MODEL_OUTPUT_PRICES = {
@@ -85,10 +86,10 @@ export const MODEL_OUTPUT_PRICES = {
   "gpt-3.5-turbo-16k": 0.004,
   "gpt-3.5-turbo-16k-0613": 0.004,
   "qwen-v1": 0,
-  "ernie": 0,
-  "spark": 0,
-  "llama": 0,
-  "chatglm": 0,
+  ernie: 0,
+  spark: 0,
+  llama: 0,
+  chatglm: 0,
 } as const;
 
 export const ALL_MODELS = [
@@ -214,15 +215,16 @@ export const useAppConfig = create<ChatConfigStore>()(
     }),
     {
       name: StoreKey.Config,
-      version: 3,
+      version: 3.1,
       migrate(persistedState, version) {
-        if (version === 3) return persistedState as any;
+        if (version === 3.1) return persistedState as any;
 
         const state = persistedState as ChatConfig;
         state.modelConfig.sendMemory = true;
         state.modelConfig.historyMessageCount = 4;
         state.modelConfig.compressMessageLengthThreshold = 1000;
         state.modelConfig.frequency_penalty = 0;
+        state.modelConfig.template = DEFAULT_INPUT_TEMPLATE;
         state.dontShowMaskSplashScreen = false;
 
         return state;
