@@ -351,9 +351,9 @@ export const useChatStore = create<ChatStore>()(
             botMessage.tiktoken =
               "prompt_tokens:" +
               prompt_tokens +
-              " completion_tokens: " +
+              "    completion_tokens: " +
               completion_tokens +
-              " total_tokens: " +
+              "    total_tokens: " +
               total_tokens;
             let price =
               prompt_tokens * MODEL_INPUT_PRICES[modelConfig.model] +

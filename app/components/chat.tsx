@@ -278,10 +278,8 @@ function ClearContextDivider() {
         )
       }
     >
-      <div className={chatStyle["clear-context-tips"]}>
-        {Locale.Context.Clear}
-      </div>
-      <div className={chatStyle["clear-context-revert-btn"]}>
+      <div className={styles["clear-context-tips"]}>{Locale.Context.Clear}</div>
+      <div className={styles["clear-context-revert-btn"]}>
         {Locale.Context.Revert}
       </div>
     </div>
@@ -961,17 +959,16 @@ export function Chat() {
                         <div className={styles["chat-message-action-date"]}>
                           {message.date.toLocaleString()}
                         </div>
-                        {message.tiktoken && !message.preview && (
-                          <div className={styles["chat-message-action-date"]}>
-                            {message.tiktoken}
-                          </div>
-                        )}
-
-                        {message.price && !message.preview && (
-                          <div className={styles["chat-message-action-date"]}>
-                            {message.price}
-                          </div>
-                        )}
+                      </div>
+                    )}
+                    {showActions && (
+                      <div className={styles["chat-message-actions"]}>
+                        <div className={styles["chat-message-action-date"]}>
+                          {message.tiktoken}
+                        </div>
+                        <div className={styles["chat-message-action-date"]}>
+                          {message.price}
+                        </div>
                       </div>
                     )}
                   </div>
