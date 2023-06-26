@@ -13,7 +13,11 @@ import {
   useAppConfig,
 } from "./config";
 import { createEmptyMask, Mask } from "./mask";
-import { DEFAULT_INPUT_TEMPLATE, StoreKey } from "../constant";
+import {
+  DEFAULT_INPUT_TEMPLATE,
+  DEFAULT_SYSTEM_TEMPLATE,
+  StoreKey,
+} from "../constant";
 import { api, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
@@ -291,7 +295,7 @@ export const useChatStore = create<ChatStore>()(
         const modelConfig = session.mask.modelConfig;
 
         const userContent = fillTemplateWith(content, modelConfig);
-        console.log("[User Input] fill with template: ", userContent);
+        console.log("[User Input] after template: ", userContent);
 
         const userMessage: ChatMessage = createMessage({
           role: "user",
@@ -324,7 +328,6 @@ export const useChatStore = create<ChatStore>()(
         });
 
         // make request
-        console.log("[User Input] ", sendMessages);
         api.llm.chat({
           messages: sendMessages,
           config: { ...modelConfig, stream: true },
@@ -425,6 +428,27 @@ export const useChatStore = create<ChatStore>()(
         // in-context prompts
         const contextPrompts = session.mask.context.slice();
 
+        // system prompts, to get close to OpenAI Web ChatGPT
+        // only will be injected if user does not use a mask or set none context prompts
+        const shouldInjectSystemPrompts = contextPrompts.length === 0;
+        const systemPrompts = shouldInjectSystemPrompts
+          ? [
+              createMessage({
+                role: "system",
+                content: fillTemplateWith("", {
+                  ...modelConfig,
+                  template: DEFAULT_SYSTEM_TEMPLATE,
+                }),
+              }),
+            ]
+          : [];
+        if (shouldInjectSystemPrompts) {
+          console.log(
+            "[Global System Prompt] ",
+            systemPrompts.at(0)?.content ?? "empty",
+          );
+        }
+
         // long term memory
         const shouldSendLongTermMemory =
           modelConfig.sendMemory &&
@@ -443,6 +467,7 @@ export const useChatStore = create<ChatStore>()(
         );
 
         // lets concat send messages, including 4 parts:
+        // 0. system prompt: to get close to OpenAI Web ChatGPT
         // 1. long term memory: summarized memory messages
         // 2. pre-defined in-context prompts
         // 3. short term memory: latest n messages
@@ -469,6 +494,7 @@ export const useChatStore = create<ChatStore>()(
 
         // concat all messages
         const recentMessages = [
+          ...systemPrompts,
           ...longTermMemoryPrompts,
           ...contextPrompts,
           ...reversedRecentMessages.reverse(),
