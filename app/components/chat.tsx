@@ -1034,18 +1034,17 @@ export function Chat() {
                         </div>
                       </div>
                     )}
-                    {showActions && (
-                      <div className={styles["chat-message-actions"]}>
-                        <div className={styles["chat-message-action-date"]}>
-                          {message.tiktoken}
-                        </div>
-                        <div className={styles["chat-message-action-date"]}>
-                          {message.price}
-                        </div>
-                      </div>
-                    )}
                   </div>
-
+                  {showActions && (
+                      <div className={styles["chat-message-action-date"]}>
+                        {message.tiktoken}
+                      </div>
+                  )}
+                  {showActions && (
+                      <div className={styles["chat-message-action-date"]}>
+                        {message.price}
+                      </div>
+                  )}
                   {showActions && (
                     <div className={styles["chat-message-action-date"]}>
                       {message.date.toLocaleString()}
