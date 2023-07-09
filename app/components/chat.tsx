@@ -712,17 +712,19 @@ export function Chat() {
   const findLastUserIndex = (messageId: string) => {
     // find last user input message and resend
     let lastUserMessageIndex: number | null = null;
+    let msgId: string;
     for (let i = 0; i < session.messages.length; i += 1) {
       const message = session.messages[i];
       if (message.role === "user") {
         lastUserMessageIndex = i;
+        msgId = message.id;
       }
       if (message.id === messageId) {
         break;
       }
     }
 
-    return lastUserMessageIndex;
+    return { lastUserMessageIndex, msgId };
   };
 
   const deleteMessage = (msgId?: string) => {
@@ -740,9 +742,12 @@ export function Chat() {
     let content = message.content;
 
     if (message.role === "assistant" && message.id) {
-      const userIndex = findLastUserIndex(message.id);
-      if (userIndex) {
-        content = session.messages.at(userIndex)?.content ?? content;
+      const { lastUserMessageIndex, msgId } = findLastUserIndex(message.id);
+      console.log("12312312", lastUserMessageIndex, msgId, message);
+      if (lastUserMessageIndex != null) {
+        content = session.messages.at(lastUserMessageIndex)?.content ?? content;
+        deleteMessage(msgId);
+        deleteMessage(message.id);
       }
     }
 
