@@ -1034,6 +1034,11 @@ export function Chat() {
                       defaultShow={i >= messages.length - 10}
                     />
                   </div>
+                  <div className={styles["chat-message-action-date"]}>
+                    {isContext
+                      ? Locale.Chat.IsContext
+                      : message.date.toLocaleString()}
+                  </div>
                   {showActions && (
                     <div className={styles["chat-message-action-date"]}>
                       {message.tiktoken}
@@ -1044,11 +1049,6 @@ export function Chat() {
                       {message.price}
                     </div>
                   )}
-                  <div className={styles["chat-message-action-date"]}>
-                    {isContext
-                      ? Locale.Chat.IsContext
-                      : message.date.toLocaleString()}
-                  </div>
                 </div>
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}
