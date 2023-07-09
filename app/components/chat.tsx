@@ -1034,6 +1034,7 @@ export function Chat() {
                       defaultShow={i >= messages.length - 10}
                     />
                   </div>
+
                   <div className={styles["chat-message-action-date"]}>
                     {isContext
                       ? Locale.Chat.IsContext
