@@ -47,6 +47,39 @@ export const CN_MASKS: BuiltinMask[] = [
     createdAt: 1688899480510,
   },
   {
+    avatar: "1f383",
+    name: "周报生成器",
+    context: [
+      {
+        id: "week-book-0",
+        role: "system",
+        content:
+          "以下是工作周报的模板\n```markdown\n# 工作做周报\n## 工作目标\n\n## 具体任务\n### 本周进展\n> 1-2句话总结本周进行工作\n\n\n### 下周计划\n> 1-2句话说明下周的具体工作和目标\n\n\n## 思考与总结\n>  可以说明下碰到的问题，工作的收获，需要的帮助等等（希望表达的内容都可以）\n> 要求：精简，言简意赅\n\n```",
+        date: "",
+      },
+      {
+        id: "week-book-1",
+        role: "user",
+        content:
+          "请帮我把以下的工作内容填充为一篇完整的周报,用 markdown 格式以分点叙述的形式输出:",
+        date: "",
+      },
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo-16k-0613",
+      temperature: 1,
+      max_tokens: 32000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: false,
+      historyMessageCount: 0,
+      compressMessageLengthThreshold: 1000,
+    },
+    lang: "cn",
+    builtin: true,
+    createdAt: 1688899480534,
+  },
+  {
     avatar: "1f47e",
     name: "代码注释16k",
     context: [
