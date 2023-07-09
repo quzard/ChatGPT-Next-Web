@@ -743,7 +743,6 @@ export function Chat() {
 
     if (message.role === "assistant" && message.id) {
       const { lastUserMessageIndex, msgId } = findLastUserIndex(message.id);
-      console.log("12312312", lastUserMessageIndex, msgId, message);
       if (lastUserMessageIndex != null) {
         content = session.messages.at(lastUserMessageIndex)?.content ?? content;
         deleteMessage(msgId);
