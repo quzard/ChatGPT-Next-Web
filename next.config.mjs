@@ -34,6 +34,9 @@ const nextConfig = {
   images: {
     unoptimized: mode === "export",
   },
+  experimental: {
+    forceSwcTransforms: true,
+  },
 };
 
 if (mode !== "export") {
