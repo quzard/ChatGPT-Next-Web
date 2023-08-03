@@ -390,7 +390,6 @@ function useScrollToBottom() {
 
   // auto scroll
   useEffect(() => {
-    console.log("auto scroll", autoScroll);
     if (autoScroll) {
       scrollDomToBottom();
     }
@@ -875,12 +874,6 @@ function _Chat() {
     context.push(copiedHello);
   }
 
-  // clear context index = context length + index in messages
-  const clearContextIndex =
-    (session.clearContextIndex ?? -1) >= 0
-      ? session.clearContextIndex! + context.length
-      : -1;
-
   // preview messages
   const renderMessages = useMemo(() => {
     return context
@@ -919,9 +912,15 @@ function _Chat() {
     userInput,
   ]);
 
-  const [msgRenderIndex, setMsgRenderIndex] = useState(
-    renderMessages.length - CHAT_PAGE_SIZE,
+  const [msgRenderIndex, _setMsgRenderIndex] = useState(
+    Math.max(0, renderMessages.length - CHAT_PAGE_SIZE),
   );
+  function setMsgRenderIndex(newIndex: number) {
+    newIndex = Math.min(renderMessages.length - CHAT_PAGE_SIZE, newIndex);
+    newIndex = Math.max(0, newIndex);
+    _setMsgRenderIndex(newIndex);
+  }
+
   const messages = useMemo(() => {
     const endRenderIndex = Math.min(
       msgRenderIndex + 3 * CHAT_PAGE_SIZE,
@@ -931,21 +930,20 @@ function _Chat() {
   }, [msgRenderIndex, renderMessages]);
 
   const onChatBodyScroll = (e: HTMLElement) => {
-    const EDGE_THRESHOLD = 100;
     const bottomHeight = e.scrollTop + e.clientHeight;
-    const isTouchTopEdge = e.scrollTop <= EDGE_THRESHOLD;
-    const isTouchBottomEdge = bottomHeight >= e.scrollHeight - EDGE_THRESHOLD;
+    const edgeThreshold = e.clientHeight;
+
+    const isTouchTopEdge = e.scrollTop <= edgeThreshold;
+    const isTouchBottomEdge = bottomHeight >= e.scrollHeight - edgeThreshold;
     const isHitBottom = bottomHeight >= e.scrollHeight - 10;
 
+    const prevPageMsgIndex = msgRenderIndex - CHAT_PAGE_SIZE;
+    const nextPageMsgIndex = msgRenderIndex + CHAT_PAGE_SIZE;
+
     if (isTouchTopEdge) {
-      setMsgRenderIndex(Math.max(0, msgRenderIndex - CHAT_PAGE_SIZE));
+      setMsgRenderIndex(prevPageMsgIndex);
     } else if (isTouchBottomEdge) {
-      setMsgRenderIndex(
-        Math.min(
-          msgRenderIndex + CHAT_PAGE_SIZE,
-          renderMessages.length - CHAT_PAGE_SIZE,
-        ),
-      );
+      setMsgRenderIndex(nextPageMsgIndex);
     }
 
     setHitBottom(isHitBottom);
@@ -957,14 +955,17 @@ function _Chat() {
     scrollDomToBottom();
   }
 
+  // clear context index = context length + index in messages
+  const clearContextIndex =
+    (session.clearContextIndex ?? -1) >= 0
+      ? session.clearContextIndex! + context.length - msgRenderIndex
+      : -1;
+
   const [showPromptModal, setShowPromptModal] = useState(false);
 
   const clientConfig = useMemo(() => getClientConfig(), []);
 
-  const location = useLocation();
-  const isChat = location.pathname === Path.Chat;
-
-  const autoFocus = !isMobileScreen || isChat; // only focus in chat page
+  const autoFocus = !isMobileScreen; // wont auto focus on mobile screen
   const showMaxIcon = !isMobileScreen && !clientConfig?.isApp;
 
   useCommand({
