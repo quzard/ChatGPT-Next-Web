@@ -22,6 +22,7 @@ import {
   Popover,
   Select,
   showConfirm,
+  showToast,
 } from "./ui-lib";
 import { ModelConfigList } from "./model-config";
 
@@ -269,13 +270,13 @@ function SyncItems() {
     <List>
       <ListItem
         title={Locale.Settings.Sync.LastUpdate}
-        subTitle={new Date().toLocaleString()}
+        subTitle={new Date(syncStore.lastSyncTime).toLocaleString()}
       >
         <IconButton
           icon={<ResetIcon />}
           text={Locale.UI.Sync}
           onClick={() => {
-            syncStore.check().then(console.log);
+            showToast(Locale.WIP);
           }}
         />
       </ListItem>
