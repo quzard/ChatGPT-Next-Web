@@ -71,16 +71,24 @@ export const MODEL_INPUT_PRICES = {
   "gpt-4-32k": 0.06,
   "gpt-4-32k-0314": 0.06,
   "gpt-4-32k-0613": 0.06,
-  "gpt-3.5-turbo": 0.0015,
+  "gpt-4-1106-preview": 0.01, // $0.01 / 1K tokens
+  "gpt-4-0125-preview": 0.01, // $0.01 / 1K tokens
+  "gpt-4-turbo-preview": 0.01, // $0.01 / 1K tokens
+  "gpt-4-vision-preview": 0.01, // $0.01 / 1K tokens
+  "gpt-3.5-turbo": 0.0015, // $0.0015 / 1K tokens
   "gpt-3.5-turbo-0301": 0.0015,
   "gpt-3.5-turbo-0613": 0.0015,
-  "gpt-3.5-turbo-16k": 0.003,
+  "gpt-3.5-turbo-16k": 0.003, // $0.003 / 1K tokens
   "gpt-3.5-turbo-16k-0613": 0.003,
+  "gpt-3.5-turbo-instruct": 0.0015, // $0.0015 / 1K tokens
+  "gpt-3.5-turbo-1106": 0.001, // $0.001 / 1K tokens
+  "gpt-3.5-turbo-0125": 0.0005, // $0.0005 / 1K tokens
   "qwen-v1": 0,
   ernie: 0,
   spark: 0,
   llama: 0,
   chatglm: 0,
+  "gemini-pro": 0,
 } as const;
 
 export const MODEL_OUTPUT_PRICES = {
@@ -90,16 +98,24 @@ export const MODEL_OUTPUT_PRICES = {
   "gpt-4-32k": 0.12,
   "gpt-4-32k-0314": 0.12,
   "gpt-4-32k-0613": 0.12,
-  "gpt-3.5-turbo": 0.0015,
+  "gpt-4-1106-preview": 0.03,
+  "gpt-4-0125-preview": 0.03,
+  "gpt-4-turbo-preview": 0.03,
+  "gpt-4-vision-preview": 0.03,
+  "gpt-3.5-turbo": 0.002,
   "gpt-3.5-turbo-0301": 0.002,
   "gpt-3.5-turbo-0613": 0.002,
   "gpt-3.5-turbo-16k": 0.004,
   "gpt-3.5-turbo-16k-0613": 0.004,
+  "gpt-3.5-turbo-instruct": 0.002,
+  "gpt-3.5-turbo-1106": 0.002,
+  "gpt-3.5-turbo-0125": 0.0015,
   "qwen-v1": 0,
   ernie: 0,
   spark: 0,
   llama: 0,
   chatglm: 0,
+  "gemini-pro": 0,
 } as const;
 
 export function limitNumber(
