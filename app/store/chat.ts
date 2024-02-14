@@ -12,12 +12,14 @@ import {
 import { createEmptyMask, Mask } from "./mask";
 import {
   DEFAULT_INPUT_TEMPLATE,
+  DEFAULT_MODELS,
   DEFAULT_SYSTEM_TEMPLATE,
   KnowledgeCutOffDate,
+  ModelProvider,
   StoreKey,
   SUMMARIZE_MODEL,
 } from "../constant";
-import { api, RequestMessage } from "../client/api";
+import { ClientApi, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import {
@@ -102,10 +104,21 @@ function countMessages(msgs: ChatMessage[]) {
 }
 
 function fillTemplateWith(input: string, modelConfig: ModelConfig) {
-  let cutoff =
+  const cutoff =
     KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
+  // Find the model in the DEFAULT_MODELS array that matches the modelConfig.model
+  const modelInfo = DEFAULT_MODELS.find((m) => m.name === modelConfig.model);
+
+  var serviceProvider = "OpenAI";
+  if (modelInfo) {
+    // TODO: auto detect the providerName from the modelConfig.model
+
+    // Directly use the providerName from the modelInfo
+    serviceProvider = modelInfo.provider.providerName;
+  }
 
   const vars = {
+    ServiceProvider: serviceProvider,
     cutoff,
     model: modelConfig.model,
     time: new Date().toLocaleString(),
@@ -122,7 +135,8 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   }
 
   Object.entries(vars).forEach(([name, value]) => {
-    output = output.replaceAll(`{{${name}}}`, value);
+    const regex = new RegExp(`{{${name}}}`, "g");
+    output = output.replace(regex, value.toString()); // Ensure value is a string
   });
 
   return output;
@@ -313,6 +327,13 @@ export const useChatStore = createPersistStore(
           ]);
         });
 
+        var api: ClientApi;
+        if (modelConfig.model.startsWith("gemini")) {
+          api = new ClientApi(ModelProvider.GeminiPro);
+        } else {
+          api = new ClientApi(ModelProvider.GPT);
+        }
+
         // make request
         api.llm.chat({
           messages: sendMessages,
@@ -412,8 +433,12 @@ export const useChatStore = createPersistStore(
         const contextPrompts = session.mask.context.slice();
 
         // system prompts, to get close to OpenAI Web ChatGPT
-        const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
-        const systemPrompts = shouldInjectSystemPrompts
+        const shouldInjectSystemPrompts =
+          modelConfig.enableInjectSystemPrompts &&
+          session.mask.modelConfig.model.startsWith("gpt-");
+
+        var systemPrompts: ChatMessage[] = [];
+        systemPrompts = shouldInjectSystemPrompts
           ? [
               createMessage({
                 role: "system",
@@ -507,6 +532,14 @@ export const useChatStore = createPersistStore(
       summarizeSession() {
         const config = useAppConfig.getState();
         const session = get().currentSession();
+        const modelConfig = session.mask.modelConfig;
+
+        var api: ClientApi;
+        if (modelConfig.model.startsWith("gemini")) {
+          api = new ClientApi(ModelProvider.GeminiPro);
+        } else {
+          api = new ClientApi(ModelProvider.GPT);
+        }
 
         // remove error messages if any
         const messages = session.messages;
@@ -538,8 +571,6 @@ export const useChatStore = createPersistStore(
             },
           });
         }
-
-        const modelConfig = session.mask.modelConfig;
         const summarizeIndex = Math.max(
           session.lastSummarizeIndex,
           session.clearContextIndex ?? 0,

@@ -14,6 +14,6 @@ jobs:
       - uses: tgymnich/fork-sync@v1.8
         with:
           token: ${{ secrets.TOKEN}}
-          owner: Yidadaa
+          owner: ChatGPTNextWeb
           base: main
           head: main
