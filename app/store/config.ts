@@ -65,7 +65,7 @@ export type ChatConfig = typeof DEFAULT_CONFIG;
 
 export type ModelConfig = ChatConfig["modelConfig"];
 
-export const MODEL_INPUT_PRICES = {
+export const MODEL_INPUT_PRICES: Record<ModelType, number> = {
   "gpt-4": 0.03,
   "gpt-4-0314": 0.03,
   "gpt-4-0613": 0.03,
@@ -92,7 +92,7 @@ export const MODEL_INPUT_PRICES = {
   "gemini-pro": 0,
 } as const;
 
-export const MODEL_OUTPUT_PRICES = {
+export const MODEL_OUTPUT_PRICES: Record<ModelType, number> = {
   "gpt-4": 0.06,
   "gpt-4-0314": 0.06,
   "gpt-4-0613": 0.06,

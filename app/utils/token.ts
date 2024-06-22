@@ -1,5 +1,6 @@
 import { encodingForModel } from "js-tiktoken";
 import { ChatMessage } from "@/app/store";
+import { MultimodalContent } from "@/app/client/api";
 
 export function estimateTokenLength(input: string): number {
   let tokenLength = 0;
@@ -38,14 +39,26 @@ export function tiktokenChatMessages(model: any, messages: ChatMessage[]) {
   for (let i = 0; i < length; i++) {
     let message = messages[i];
     prompt_tokens += tokensPerMessage;
-    prompt_tokens += encoding.encode(message.content).length;
+    if (typeof message.content === "string") {
+      prompt_tokens += encoding.encode(message.content).length;
+    }
     prompt_tokens += encoding.encode(message.role).length;
   }
   prompt_tokens += 3; // every reply is primed with assistant
   return prompt_tokens;
 }
 
-export function tiktokenChatMessage(model: any, message: string) {
+export function tiktokenChatMessage(
+  model: any,
+  message: string | MultimodalContent[],
+) {
   const encoding = encodingForModel(model);
-  return encoding.encode(message).length;
+  if (typeof message === "string") {
+    return encoding.encode(message).length;
+  } else {
+    return message.reduce(
+      (total, content) => total + encoding.encode(content.toString()).length,
+      0,
+    );
+  }
 }
