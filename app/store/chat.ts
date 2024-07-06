@@ -21,7 +21,12 @@ import {
   SUMMARIZE_MODEL,
   GEMINI_SUMMARIZE_MODEL,
 } from "../constant";
-import { ClientApi, RequestMessage, MultimodalContent } from "../client/api";
+import { getClientApi } from "../client/api";
+import type {
+  ClientApi,
+  RequestMessage,
+  MultimodalContent,
+} from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import {
@@ -375,15 +380,7 @@ export const useChatStore = createPersistStore(
           ]);
         });
 
-        var api: ClientApi;
-        if (modelConfig.providerName == ServiceProvider.Google) {
-          api = new ClientApi(ModelProvider.GeminiPro);
-        } else if (modelConfig.providerName == ServiceProvider.Anthropic) {
-          api = new ClientApi(ModelProvider.Claude);
-        } else {
-          api = new ClientApi(ModelProvider.GPT);
-        }
-
+        const api: ClientApi = getClientApi(modelConfig.providerName);
         // make request
         api.llm.chat({
           messages: sendMessages,
@@ -581,14 +578,7 @@ export const useChatStore = createPersistStore(
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
-        var api: ClientApi;
-        if (modelConfig.providerName == ServiceProvider.Google) {
-          api = new ClientApi(ModelProvider.GeminiPro);
-        } else if (modelConfig.providerName == ServiceProvider.Anthropic) {
-          api = new ClientApi(ModelProvider.Claude);
-        } else {
-          api = new ClientApi(ModelProvider.GPT);
-        }
+        const api: ClientApi = getClientApi(modelConfig.providerName);
 
         // remove error messages if any
         const messages = session.messages;
