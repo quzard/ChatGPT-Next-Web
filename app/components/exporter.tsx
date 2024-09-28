@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { ChatMessage, ModelType, useAppConfig, useChatStore } from "../store";
+import { ChatMessage, useAppConfig, useChatStore } from "../store";
 import Locale from "../locales";
 import styles from "./exporter.module.scss";
 import {
@@ -583,6 +583,7 @@ export function ImagePreviewer(props: {
                 <Markdown
                   content={getMessageTextContent(m)}
                   fontSize={config.fontSize}
+                  fontFamily={config.fontFamily}
                   defaultShow
                 />
                 {getMessageImages(m).length == 1 && (
